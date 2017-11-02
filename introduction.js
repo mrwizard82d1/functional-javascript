@@ -1,4 +1,4 @@
-var _ = require('underscore');
+const _ = require('underscore');
 
 function splat(fun) {
   return function(array) {
@@ -6,10 +6,9 @@ function splat(fun) {
   }
 }
 
-var addArrayElements = splat(function(x, y) {
+const addArrayElements = splat(function(x, y) {
   return x + y;
 });
-
 console.log(addArrayElements([1, 2]));
 
 function unsplat(fun) {
@@ -18,8 +17,7 @@ function unsplat(fun) {
   }
 }
 
-var joinElements = unsplat(function(array) { return array.join(' '); });
-
+const joinElements = unsplat(function(array) { return array.join(' '); });
 console.log(joinElements(1, 2));
 console.log(joinElements('-', '$', '/', '!', ':'));
 
@@ -31,7 +29,7 @@ try {
   fail('Lorem ipsum');
 }
 catch (e) {
-  console.log('Caught it.', e);
+  console.log(`Caught it: ${e}`);
 }
 
 function warn(thing) {
@@ -47,26 +45,24 @@ note('veni, vidi, vici');
 function isIndexed(data) {
   return _.isArray(data) || _.isString(data);
 }
-
 console.log(isIndexed([]));
 console.log(isIndexed('Utrum esse oporteat, annon'));
 
 function nth(a, index) {
   if (!_.isNumber(index)) {
-    fail('Expected a number, received ' + index);
+    fail(`Expected a number, received ${index}`);
   }
   if (!isIndexed(a)) {
     fail('nth not supported on non-indexed type');
   }
   if ((index < 0) || (index > a.length - 1)) {
-    fail('Index ' + index + ' out of bounds');
+    fail(`Index ${index} out of bounds`);
   }
   
   return a[index];
 }
 
-var letters = ['a', 'b', 'c'];
-
+const letters = ['a', 'b', 'c'];
 console.log(nth(letters, 1));
 console.log(nth("abc", 0));
 // console.log(nth({}, 2));
