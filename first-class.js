@@ -1,3 +1,5 @@
+const _ = require('underscore');
+
 // First class functions
 
 const fortyTwo = () => 42;
@@ -28,4 +30,37 @@ console.log(
 console.log();
 console.log(`A number can be returned from a function: ${(() => 42)()}`);
 console.log(`And so can a function: ${(() => () => 42)()}`);
+
+// A functional "99 Bottles of Beer on the Wall"
+
+function lyricSegment(n) {
+  return _.chain([])
+          .push(`${n} ${n > 1 ? 'bottles' : 'bottle'} of beer on the wall`)
+          .push(`${n} ${n > 1 ? 'bottles' : 'bottle'} of beer`)
+          .push('Take one down and pass it around')
+          .tap((lyrics) => {
+            if (n > 1) {
+              lyrics.push(`${n - 1} ${n - 1 > 1 ? 'bottles' : 'bottle'} of beer on the wall`);
+            } else {
+              lyrics.push('No more bottles of beer on the wall');
+            }
+          })
+          .value();
+}
+console.log();
+console.log('lyricSegment(9)');
+console.log(lyricSegment(9));
+
+console.log();
+console.log('lyricSegment(1)');
+console.log(lyricSegment(1));
+
+function song(start, end, lyricGenerator) {
+  return _.reduce(_.range(start, end - 1, -1),
+    (acc, index) => acc.concat(lyricGenerator(index)), []);
+}
+song(5, 1, lyricSegment);
+console.log();
+console.log('song(5, 1, lyricSegment)');
+console.log(song(5, 1, lyricSegment));
 
