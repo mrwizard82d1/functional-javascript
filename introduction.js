@@ -76,3 +76,36 @@ function second(a) {
 console.log(second(['a', 'b']));
 console.log(second('fogus'));
 // console.log(second({}));
+
+function existy(x) {
+  return x != null;
+}
+
+_.each([null, undefined, {}.notHere, (function(){})(), 0, false],
+    toTest => console.log(`existy(${toTest}) ===`, existy(toTest)));
+
+function truthy(x) {
+  return ((x !== false) && existy(x));
+}
+
+_.each([false, undefined, 0, ''], toTest => console.log(`truthy(${toTest}) ===`, truthy(toTest)));
+
+function doWhen(cond, action) {
+  if (truthy(cond)) {
+    return action();
+  }
+  else {
+    return undefined;
+  }
+}
+
+const T = () => true;
+const F = () => false;
+
+console.log(['doWhen(T(), T) ===', doWhen(T(), T)].join(' '));
+console.log(['doWhen(F(), T) ===', doWhen(F(), T)].join(' '));
+
+module.exports = {
+  existy: existy,
+  truthy: truthy,
+};

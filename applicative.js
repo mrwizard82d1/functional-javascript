@@ -1,4 +1,5 @@
 const _ = require('underscore');
+const { existy } = require('./introduction');
 
 const nums = _.range(1, 5 + 1);
 
@@ -152,3 +153,44 @@ console.log('_.groupBy(albums, a => a.genre) ===', albumsByGenre);
 
 console.log();
 console.log('_.countBy(albums, a => a.genre ===', _.countBy(albums, a => a.genre));
+
+function cat() {
+  const head = _.first(arguments);
+  if (existy(head)) {
+    return head.concat.apply(head, _.rest(arguments));
+  } else {
+    return [];
+  }
+}
+
+console.log();
+console.log('cat() ===', cat());
+console.log('cat([1, 2, 3], [4, 5, 6], [7, 9]) ===', cat([1, 2, 3], [4, 5, 6], [7, 9]));
+
+function construct(head, tail) {
+  return cat([head], _.toArray(tail));
+}
+
+console.log();
+console.log('construct(42) ===', construct(42));
+console.log('construct(42, [1, 2, 3] ===', construct(42, [1, 2, 3]));
+
+function mapcat(fun, coll) {
+  return cat.apply(null, _.map(coll, fun));
+}
+
+console.log();
+console.log('mapcat(i => construct(i, ','), [1, 2, 3]) ===',
+  mapcat(i => construct(i, ','), [1, 2, 3]));
+
+function butLast(coll) {
+  return _.toArray(coll).slice(0, -1);
+}
+
+function interpose(inter, coll) {
+  return butLast(mapcat(i => construct(i, [inter]), coll));
+}
+
+console.log();
+console.log('interpose(\',\', [1, 2, 3]) ===', interpose(',', [1, 2, 3]));
+
