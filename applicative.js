@@ -194,3 +194,89 @@ function interpose(inter, coll) {
 console.log();
 console.log('interpose(\',\', [1, 2, 3]) ===', interpose(',', [1, 2, 3]));
 
+const zombie = {
+  name: 'Bub',
+  film: 'Day of the Dead',
+};
+
+console.log();
+console.log('_.keys, _.values, and _.pluck');
+console.log('_.keys(zombie) ===', _.keys(zombie));
+console.log('_.values(zombie) ===', _.values(zombie))
+
+const books = [
+  {
+    title: 'Chthon',
+    author: 'Anthony',
+  },
+  {
+    title: 'Grendel',
+    author: 'Gardner',
+  },
+  {
+    title: 'After Dark',
+  },
+];
+console.log('_.pluck(books, \'author\') ===', _.pluck(books, 'author'));
+
+console.log();
+console.log('_.pairs and _.object');
+console.log('_.pairs(zombie) ===', _.pairs(zombie));
+console.log('_.object(_.map(_.pairs(zombie), pair => [pair[0].toUpperCase(), pair[1]])) ===',
+  _.object(_.map(_.pairs(zombie), pair => [pair[0].toUpperCase(), pair[1]])));
+
+console.log();
+console.log('_.invert flips keys and values');
+console.log('_.invert(zombie) ===', _.invert(zombie));
+console.log('But _.invert produces keys which *must* be strings');
+const toInvert = {
+  a: 138,
+  b: 9
+};
+console.log('_invert(', toInvert, ') ===', _.invert(toInvert));
+
+console.log();
+console.log('_.defaults returns a specified default object if no such object found');
+console.log('_.pluck(_.map(books, b => _.defaults(b, {author: \'Unknown\'})), \'author\')) ===',
+  _.pluck(_.map(books, b => _.defaults(b, {author: 'Unknown'})), 'author'));
+
+console.log();
+console.log('_.pick and _.omit (potentially) filter objects based on their arguments.');
+const person = {
+  name: 'Romy',
+  token: 'j3983ij',
+  password: 'tigress',
+};
+console.log('person ===', person);
+
+const info = _.omit(person, 'token', 'password');
+console.log('_.omit(person, \'token\', \'password\' ===', info);
+
+const creds = _.pick(person, 'token', 'password');
+console.log('_.pick(person, \'token\', \'password\') ===', creds);
+
+console.log();
+console.log('_.findWhere and _.where search an array based on a predicate function');
+const library = [
+  {
+    title: 'SICP',
+    isbn: '0262010771',
+    ed: 1,
+  },
+  {
+    title: 'SICP',
+    isbn: '0262510871',
+    ed: 2,
+  },
+  {
+    title: 'Joy of Clojure',
+    isbn: '1935182641',
+    ed: 1,
+  },
+];
+console.log('library ===', library);
+console.log('_.findWhere finds the first item in an array matching the filter.');
+console.log('_.findWhere(library, {title: \'SICP\', ed: 2}) ===',
+  _.findWhere(library, {title: 'SICP', ed: 2}));
+console.log('_.where finds all items in an array matching the filter.');
+console.log('_.where(library, {title: \'SICP\'}) ===', _.where(library, {title: 'SICP'}));
