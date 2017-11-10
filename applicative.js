@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const { existy } = require('./introduction');
+const { existy, truthy } = require('./introduction');
 
 const nums = _.range(1, 5 + 1);
 
@@ -280,3 +280,112 @@ console.log('_.findWhere(library, {title: \'SICP\', ed: 2}) ===',
   _.findWhere(library, {title: 'SICP', ed: 2}));
 console.log('_.where finds all items in an array matching the filter.');
 console.log('_.where(library, {title: \'SICP\'}) ===', _.where(library, {title: 'SICP'}));
+
+console.log();
+console.log('Table data');
+
+console.log('Select title from library - sort of')
+console.log('_.pluck(library, \'title\') ===', _.pluck(library, 'title'));
+
+function project(table, keys) {
+  return _.map(table, o => _.pick.apply(null, construct(o, keys)));
+}
+
+console.log('A better select: project');
+const editionResults = project(library, ['title', 'isbn']);
+console.log('project(library, [\'title\', \'isbn\']) ===', editionResults);
+
+console.log();
+console.log('project returns a table which can be further processed');
+const isbnResults = project(editionResults, ['isbn']);
+console.log('project(editionResults, [\'isbn\']) ===', isbnResults);
+
+console.log();
+console.log('Once finished with table processing, one can break the table abstraction.');
+console.log('_.pluck(isbnResults, \'isbn\') ===', _.pluck(isbnResults, 'isbn'));
+
+console.log();
+console.log('Functional equivalent of "as"');
+
+/**
+ * Rename keys in `obj` using the map, `newName`.
+ * @param obj The object whose keys we rename.
+ * @param newNames The mapping from old to new names.
+ * @returns {Object} An object whose key's have been renamed according to the map, `newName`.
+ */
+function rename(obj, newNames) {
+  /** Adds the value `obj[old]` to `result[nu]` if `obj` has the key `old`. */
+  const addNewKeyWithOldValue = (result, nu, old) => {
+    if (_.has(obj, old)) {
+      result[nu] = obj[old];
+      return result;
+    } else {
+      return result;
+    }
+  };
+  
+  /** Return `obj` with all keys to be renamed removed. */
+  const removeKeysToBeMapped = () => _.omit.apply(null, construct(obj, _.keys(newNames)));
+  
+  // Note that _.reduce applied to an object can utilize a reducer function expecting arguments
+  // of accumulator, value and key. This is actually the same behavior available when applying
+  // _.reduce to an array because an array is actually a mapping between the array indices and the
+  // array values.
+  return _.reduce(newNames, addNewKeyWithOldValue, removeKeysToBeMapped());
+}
+
+const toMap = { a: 1, b: 2 };
+const renameMap = { a: 'AAA' };
+console.log('rename(', toMap, ', ', renameMap, ') ===', rename(toMap, renameMap));
+
+console.log();
+console.log('`as` is built atop `rename`.');
+
+function as(table, newNames) {
+  return _.map(table, obj => rename(obj, newNames));
+}
+
+console.log('rename "ed" to "edition" in `library`');
+console.log('as(library, {\'ed\': \'edition\'}) ===', as(library, {'ed': 'edition'}));
+
+console.log();
+console.log('Because `as` and `project` work against the same (table) abstraction,');
+console.log('we can chain these calls together.');
+
+console.log('project(as(library, { ed: \'edition\' })), [\'edition\']) ===',
+  project(as(library, { ed: 'edition' }), ['edition']));
+
+console.log();
+console.log('The equivalent of WHERE: restrict');
+
+function restrict(table, pred) {
+  return _.reduce(table, (restrictedTable, toTest) => {
+    if (truthy(pred(toTest))) {
+      return restrictedTable;
+    } else {
+      return _.without(restrictedTable, toTest);
+    }
+  }, table);
+}
+
+function alternateRestrict(table, pred) {
+  return _.filter(table, obj => truthy(pred(obj)));
+}
+
+console.log();
+console.log('restrict(library, b => b.ed > 1) ===', restrict(library, b => b.ed > 1));
+
+console.log();
+console.log('An alternative implementation of `restrict`. (I believe they are equivalent.)');
+console.log('alternateRestrict(table, b => b.ed > 1) ===',
+  alternateRestrict(library, b => b.ed > 1));
+
+console.log();
+console.log('Because `restrict` operates on the table abstraction, it can also be chained.');
+console.log('restrict(project(as(library, { ed: \'edition\' }), ' +
+            '[\'title\', \'isbn\', \'edition\'] ), b => b.edition > 1)  ===',
+  restrict(
+    project(
+      as(library, { ed: 'edition' }),
+      ['title', 'isbn', 'edition']),
+      b => b.edition > 1));
