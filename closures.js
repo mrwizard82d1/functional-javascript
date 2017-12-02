@@ -61,3 +61,5 @@ console.log();
 console.log('Finally, `plucker` can be used with `_.filter` to grab objects that have a specific' +
             ' field');
 console.log('_.filter(books, getTitle) ===', _.filter(books, getTitle));
+
+exports.plucker = plucker;

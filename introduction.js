@@ -108,4 +108,6 @@ console.log(['doWhen(F(), T) ===', doWhen(F(), T)].join(' '));
 module.exports = {
   existy: existy,
   truthy: truthy,
+  fail: fail,
+  doWhen: doWhen,
 };
