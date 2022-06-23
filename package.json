@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/mrwizard82d1/functional-javascript#readme",
   "devDependencies": {
-    "underscore": "^1.8.3"
+    "underscore": "^1.12.1"
   }
 }
